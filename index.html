@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather On This Day</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Weather On This Day</h1>
+            <p id="location-display">Locating...</p>
+            <div class="date-selector">
+                <input type="date" id="date-picker" aria-label="Select Date">
+            </div>
+        </header>
+
+        <main>
+            <section id="current-weather" class="hero-card glass">
+                <div class="loading-spinner"></div>
+            </section>
+
+            <section class="history-section">
+                <h2>Past 5 Years</h2>
+                <div id="history-grid" class="history-grid">
+                    <!-- Historical cards will be injected here -->
+                    <div class="card-skeleton glass"></div>
+                    <div class="card-skeleton glass"></div>
+                    <div class="card-skeleton glass"></div>
+                    <div class="card-skeleton glass"></div>
+                    <div class="card-skeleton glass"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a></p>
+        </footer>
+    </div>
+
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
