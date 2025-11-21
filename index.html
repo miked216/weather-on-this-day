@@ -15,7 +15,16 @@
     <div class="app-container">
         <header>
             <h1>Weather On This Day</h1>
-            <p id="location-display">Locating...</p>
+            <div id="location-display">
+                <span id="city-name">Locating...</span>
+                <button id="edit-location-btn" class="icon-btn" aria-label="Edit Location">
+                    <i data-lucide="pencil"></i>
+                </button>
+            </div>
+            <div class="search-container hidden" id="search-container">
+                <input type="text" id="search-input" placeholder="Search city..." autocomplete="off">
+                <div id="search-results" class="search-results"></div>
+            </div>
             <div class="date-selector">
                 <input type="date" id="date-picker" aria-label="Select Date">
             </div>

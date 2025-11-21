@@ -39,9 +39,20 @@ function getWeatherInfo(code) {
 
 async function initApp() {
     const locationDisplay = document.getElementById('location-display');
+    const cityNameEl = document.getElementById('city-name');
+    const searchContainer = document.getElementById('search-container');
+    const editBtn = document.getElementById('edit-location-btn');
+
+    // Toggle search
+    editBtn.addEventListener('click', () => {
+        searchContainer.classList.toggle('hidden');
+        if (!searchContainer.classList.contains('hidden')) {
+            document.getElementById('search-input').focus();
+        }
+    });
 
     if (!navigator.geolocation) {
-        locationDisplay.textContent = 'Geolocation not supported. Using default (NYC).';
+        cityNameEl.textContent = 'Geolocation not supported. Using default (NYC).';
         fetchWeatherData(40.7128, -74.0060, "New York");
         return;
     }
@@ -64,10 +75,12 @@ async function initApp() {
                 const selectedDate = new Date(e.target.value);
                 fetchWeatherData(latitude, longitude, selectedDate);
             });
+
+            setupSearch(latitude, longitude);
         },
         (error) => {
             console.error(error);
-            locationDisplay.textContent = 'Location access denied. Using default (NYC).';
+            cityNameEl.textContent = 'Location access denied. Using default (NYC).';
 
             const today = new Date();
             const datePicker = document.getElementById('date-picker');
@@ -80,8 +93,103 @@ async function initApp() {
                 const selectedDate = new Date(e.target.value);
                 fetchWeatherData(40.7128, -74.0060, selectedDate);
             });
+
+            setupSearch(40.7128, -74.0060);
         }
     );
+}
+
+let currentLat, currentLon;
+
+function setupSearch(initialLat, initialLon) {
+    currentLat = initialLat;
+    currentLon = initialLon;
+
+    const searchInput = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('search-results');
+    let debounceTimer;
+
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        const query = e.target.value.trim();
+
+        if (query.length < 2) {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            searchLocation(query);
+        }, 300);
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.style.display = 'none';
+        }
+    });
+}
+
+async function searchLocation(query) {
+    const resultsContainer = document.getElementById('search-results');
+    try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`);
+        const data = await res.json();
+
+        if (!data.results || data.results.length === 0) {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        resultsContainer.innerHTML = '';
+        data.results.forEach(place => {
+            const div = document.createElement('div');
+            div.className = 'search-result-item';
+
+            const parts = [];
+            if (place.admin1) parts.push(place.admin1);
+            if (place.country) parts.push(place.country);
+            const subText = parts.join(', ');
+
+            div.innerHTML = `
+                <div class="search-result-name">${place.name}</div>
+                <div class="search-result-sub">${subText}</div>
+            `;
+
+            div.addEventListener('click', () => {
+                selectLocation(place);
+            });
+
+            resultsContainer.appendChild(div);
+        });
+
+        resultsContainer.style.display = 'block';
+
+    } catch (error) {
+        console.error("Search failed:", error);
+    }
+}
+
+function selectLocation(place) {
+    const searchInput = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('search-results');
+    const searchContainer = document.getElementById('search-container');
+    const cityNameEl = document.getElementById('city-name');
+
+    searchInput.value = '';
+    resultsContainer.style.display = 'none';
+    searchContainer.classList.add('hidden');
+
+    currentLat = place.latitude;
+    currentLon = place.longitude;
+
+    cityNameEl.textContent = `Weather in ${place.name}`;
+
+    const datePicker = document.getElementById('date-picker');
+    const selectedDate = new Date(datePicker.value);
+
+    fetchWeatherData(currentLat, currentLon, selectedDate);
 }
 
 async function fetchWeatherData(lat, lon, date) {
@@ -169,7 +277,7 @@ function renderMainCard(temp, code, date) {
 }
 
 async function fetchCityName(lat, lon) {
-    const locationDisplay = document.getElementById('location-display');
+    const cityNameEl = document.getElementById('city-name');
     try {
         // Use Open-Meteo Geocoding API (free, no key)
         // Note: The standard open-meteo API doesn't do reverse geocoding directly in the forecast endpoint.
@@ -184,11 +292,11 @@ async function fetchCityName(lat, lon) {
         const data = await res.json();
 
         const city = data.city || data.locality || data.principalSubdivision || "Unknown Location";
-        locationDisplay.textContent = `Weather in ${city}`;
+        cityNameEl.textContent = `Weather in ${city}`;
 
     } catch (e) {
         console.error("Reverse geocoding failed", e);
-        locationDisplay.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+        cityNameEl.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
     }
 }
 

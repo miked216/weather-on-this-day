@@ -1,6 +1,6 @@
 :root {
     --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    --glass-bg: rgba(0, 0, 0, 0.6);
+    --glass-bg: rgba(0, 0, 0, 0.7);
     --glass-border: rgba(255, 255, 255, 0.2);
     --text-primary: #ffffff;
     --text-secondary: #94a3b8;
@@ -47,6 +47,7 @@ header h1 {
     color: #ffffff;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 #location-display {
@@ -58,13 +59,111 @@ header h1 {
     justify-content: center;
     gap: 0.5rem;
     margin-bottom: 1rem;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.icon-btn:hover {
+    opacity: 1;
+}
+
+.icon-btn svg {
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+}
+
+.hidden {
+    display: none;
 }
 
 .date-selector {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 1rem;
+}
+
+#search-input {
+    width: 100%;
+    background: var(--glass-bg);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#search-input:focus {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: var(--accent);
+}
+
+#search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+    backdrop-filter: blur(10px);
+}
+
+.search-result-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.search-result-name {
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+.search-result-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
 }
 
 #date-picker {
@@ -130,6 +229,7 @@ header h1 {
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 .current-condition {
@@ -139,7 +239,8 @@ header h1 {
     display: flex;
     align-items: center;
     gap: 1rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    gap: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 .current-condition svg {
@@ -153,6 +254,7 @@ header h1 {
     margin-bottom: 1rem;
     font-size: 1.5rem;
     font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 .history-grid {
@@ -180,11 +282,13 @@ header h1 {
     font-size: 1rem;
     color: var(--text-secondary);
     font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 .history-temp {
     font-size: 1.8rem;
     font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7);
 }
 
 .history-condition {
